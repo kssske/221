@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>出欠管理システム</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+
+        <h1 id="homeButton">学生情報・出欠登録</h1>
+    </header>
+
+    <main>
+        <section class="card">
+            <h2>学生情報検索</h2>
+            <form id="searchForm">
+                <div class="form-row">
+                    <label for="studentNumber">学生番号</label>
+                    <input type="text" id="studentNumber" />
+                </div>
+                <div class="form-row">
+                    <label for="pin">暗証番号</label>
+                    <input type="password" id="pin" />
+                </div>
+                <button type="submit">検索</button>
+            </form>
+            <div id="searchMessage" class="message"></div>
+        </section>
+
+        <section class="card" id="studentSection" hidden>
+            <h2>学生情報</h2>
+            <div id="studentInfo">
+            </div>
+
+            <h3>出欠一覧</h3>
+            <div class="table-wrapper">
+                <table id="attendanceTable">
+                </table>
+            </div>
+        </section>
+
+        <section class="card" id="attendanceSection" hidden>
+            <h2>出欠登録</h2>
+            <form id="attendanceForm">
+                <div class="form-row">
+                    <label>
+                        対象学生番号:
+                        <input type="text" id="attendanceNumber" readonly />
+                    </label>
+                </div>
+
+                <div class="form-row">
+                    <label for="session">対象回</label>
+                    <select id="session" required>
+                        <option value="">-- 選択 --</option>
+                        <script>
+                            for (let i = 1; i <= 15; i++) {
+                                document.write(`<option value="${i}">${i}回目</option>`);
+                            }
+                        </script>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <label>ステータス</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="status" value="1" required /> 出席</label>
+                        <label><input type="radio" name="status" value="0" /> 欠席</label>
+                    </div>
+                </div>
+
+                <button type="submit">出欠を登録・更新</button>
+            </form>
+            <div id="attendanceMessage" class="message"></div>
+        </section>
+
+    </main>
+
+    <script src="main.js"></script>
+</body>
+
+</html>
