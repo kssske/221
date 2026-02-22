@@ -10,8 +10,8 @@ async function seed() {
 
         // 受講者の作成
         await db.execute(
-            "INSERT INTO 受講者 (学生番号, 氏名, 暗唱番号) VALUES (?, ?, ?)",
-            [studentNumber, `テスト学生${i}`, pin]
+            "INSERT INTO 受講者 (学生番号, 氏名,ふりがな) VALUES (?, ?,?)",
+            [studentNumber, `学生${i}`, `がくせい${i}`]
         );
 
         // 出欠のランダム作成（1〜15回分）
@@ -22,6 +22,10 @@ async function seed() {
                 [studentNumber, s, status]
             );
         }
+        const discriptionid = Math.floor(studentNumber);
+        "INSERT INTO 出欠 (学生番号, 回, 出席) VALUES (?, ?, ?)"
+
+
     }
     console.log("50人分のダミーデータを投入しました！");
     process.exit();
