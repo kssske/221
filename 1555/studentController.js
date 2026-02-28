@@ -2,21 +2,16 @@ const Student = require("./studentModel");
 
 exports.getData = async (req, res) => {
     try {
-        const { number } = req.params;
-        const { pin } = req.query;
+        const number = req.user.number;
 
-        if (!pin)
-            return res.status(400).json({ error: "暗証番号が必要です" });
-
-        const row = await Student.getStudentData(number, pin);
+        const row = await Student.getStudentData(number);
 
         if (!row)
-            return res.status(404).json({ error: "該当なし、または認証失敗" });
+            return res.status(404).json({ error: "該当なし" });
 
         res.json(row);
 
     } catch (error) {
-        console.error(error);
         res.status(500).json({ error: "サーバーエラー" });
     }
 };

@@ -1,6 +1,6 @@
 const { getDB } = require("./db");
 
-exports.getStudentData = async (number, pin) => {
+exports.getStudentData = async (number) => {
   const db = getDB();
 
   const cols = Array.from({ length: 15 }, (_, i) =>
@@ -25,10 +25,10 @@ exports.getStudentData = async (number, pin) => {
   LEFT JOIN (SELECT 学生番号, SUM(出席) AS 出席合計 FROM 出欠 GROUP BY 学生番号) AS 出席結果 USING(学生番号)
   LEFT JOIN 備考 USING(学生番号)
   LEFT JOIN 秘密情報 USING(学生番号)
-  WHERE 学生番号=? AND 暗唱番号=?
+  WHERE 学生番号=?
   GROUP BY 受講者.学生番号, 氏名, ふりがな, 備考.記述, 日付, テスト結果.テスト合計
   `;
 
-  const [rows] = await db.execute(sql, [number, pin]);
+  const [rows] = await db.execute(sql, [number]);
   return rows[0];
 };

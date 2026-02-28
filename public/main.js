@@ -1,6 +1,6 @@
 // 学生情報を保持しておく（学生番号などを出欠登録側で使うため）
 let currentStudentNumber = null;
-
+let authToken = null;
 // ページ読み込み時の初期化
 window.addEventListener("DOMContentLoaded", () => {
   const searchForm = document.getElementById("searchForm");
@@ -51,9 +51,19 @@ async function handleSearchSubmit(e) {
   }
 
   try {
-    // /data/:number?pin=xxx にアクセス
-    const res = await fetch(`/api/student/${encodeURIComponent(number)}?pin=${encodeURIComponent(pin)}`);// main.js の修正
+    const loginRes = await fetch("/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ number, pin })
+    });
+    const loginData = await loginRes.json();
 
+    if (!loginRes.ok) throw new Error(loginData.error);
+    authToken = loginData.token;
+    // /data/:number?pin=xxx にアクセス
+    const res = await fetch(`/api/student/${number}`, {
+      headers: { "Authorization": `Bearer ${authToken}` } // ここでトークンを添える！
+    });
 
     const data = await res.json();
 
@@ -186,12 +196,11 @@ async function handleAttendanceSubmit(e) {
   try {
     const res = await fetch("/api/attendance", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        number,
-        session: Number(session),
-        status,
-      }),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${authToken}` // トークンを追加！
+      },
+      body: JSON.stringify({ number, session, status }),
     });
 
     const data = await res.json();
