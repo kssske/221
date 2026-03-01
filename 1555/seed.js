@@ -1,8 +1,15 @@
+const bcrypt = require("bcrypt");
 const { initDB, getDB } = require("./db");
-
 async function seed() {
     await initDB();
     const db = getDB();
+    await db.query("SET FOREIGN_KEY_CHECKS = 0;"); // 制約を一時的に無効化
+    await db.query("TRUNCATE TABLE 出欠");
+    await db.query("TRUNCATE TABLE 備考");
+    await db.query("TRUNCATE TABLE 秘密情報");
+    await db.query("TRUNCATE TABLE テスト評価");
+    await db.query("TRUNCATE TABLE 受講者");
+    await db.query("SET FOREIGN_KEY_CHECKS = 1;");
     const messages = [
         "プログラミングの理解が非常に早いです。",
         "積極的に質問をしており、意欲的です。",
@@ -56,9 +63,11 @@ async function seed() {
             // [学生番号, テスト名, 受験フラグ, 点数] の順で配列に入れる
             testScoreData.push([studentNumber, testName, juken, score]);
         });
-        const pin = Math.floor(1000 + Math.random() * 9000);
-        pinn.push([studentNumber, pin]);
 
+        const pin = Math.floor(1000 + Math.random() * 9000).toString();
+        const hash = await bcrypt.hash(pin, 10);
+
+        pinn.push([studentNumber, hash]);
 
     }
 

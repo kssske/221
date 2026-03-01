@@ -94,7 +94,7 @@ async function handleSearchSubmit(e) {
     msg.classList.add("success");
   } catch (err) {
     console.error(err);
-    msg.textContent = "通信エラーが発生しました。";
+    msg.textContent = "パスワードが違います";
     msg.classList.add("error");
   }
 }
