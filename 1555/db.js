@@ -2,16 +2,24 @@
 const mysql = require('mysql2/promise');
 
 let connection;
-
 async function initDB() {
-    // db.js の接続部分
-    connection = await mysql.createConnection({
-        host: 'localhost',
-        user: 'root',
-        password: '', // ← ここを書き換え！
-        database: 'kougi_db' // ← あらかじめMySQLで作っておいたDB名
-    });
-    console.log("MySQLに接続しました");
+    let connected = false;
+    while (!connected) {
+        try {
+            connection = await mysql.createConnection({
+                host: process.env.DB_HOST,
+                user: process.env.DB_USER,
+                password: process.env.DB_PASSWORD,
+                database: process.env.DB_NAME,
+
+            });
+            connected = true;
+
+        } catch (err) {
+
+            await new Promise(resolve => setTimeout(resolve, 5000));
+        }
+    }
 }
 
 function getDB() {

@@ -3,6 +3,17 @@ const { initDB, getDB } = require("./db");
 async function seed() {
     await initDB();
     const db = getDB();
+    const createTables = [
+        "CREATE TABLE IF NOT EXISTS `受講者` (学生番号 int PRIMARY KEY, 氏名 varchar(50), ふりがな varchar(50))ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;",
+        "CREATE TABLE IF NOT EXISTS `秘密情報` (学生番号 int PRIMARY KEY, 暗唱番号 varchar(255)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;",
+        "CREATE TABLE IF NOT EXISTS `出欠` (学生番号 int, 回 int, 出席 int, PRIMARY KEY(学生番号, 回)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;",
+        "CREATE TABLE IF NOT EXISTS `テスト評価` (学生番号 int, テスト名 varchar(50), 受験 int, 点数 int, PRIMARY KEY(学生番号, テスト名)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;",
+        "CREATE TABLE IF NOT EXISTS `備考` (学生番号 int, 記述 varchar(50), 日付 int, PRIMARY KEY(学生番号, 日付)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
+    ];
+
+    for (const sql of createTables) {
+        await db.query(sql);
+    }
     await db.query("SET FOREIGN_KEY_CHECKS = 0;"); // 制約を一時的に無効化
     await db.query("TRUNCATE TABLE 出欠");
     await db.query("TRUNCATE TABLE 備考");
@@ -22,7 +33,6 @@ async function seed() {
     const selectedIndices = studentIndices
         .sort(() => Math.random() - 0.5) // シャッフル
         .slice(0, 6); // 先頭の6人を選択
-    // 1000 から 9999 までのランダムな整数を作る
 
     // 2. 一括挿入用の配列を準備
     let studentsData = [];
@@ -65,6 +75,7 @@ async function seed() {
         });
 
         const pin = Math.floor(1000 + Math.random() * 9000).toString();
+        console.log(`学生番号${studentNumber} pin${pin}`);
         const hash = await bcrypt.hash(pin, 10);
 
         pinn.push([studentNumber, hash]);
