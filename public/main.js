@@ -1,6 +1,41 @@
 // 学生情報を保持しておく（学生番号などを出欠登録側で使うため）
 let currentStudentNumber = null;
 let authToken = null;
+
+async function apiFetch(url, options = {}) {
+
+  const headers = {
+    "Content-Type": "application/json",
+    ...options.headers
+  };
+
+  if (authToken) {
+    headers["Authorization"] = `Bearer ${authToken}`;
+  }
+
+  const res = await fetch(url, {
+    ...options,
+    headers
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.error || "API error");
+  }
+
+  return data;
+}
+function showMessage(el, text, type) {
+
+  el.textContent = text
+  el.className = "message"
+
+  if (type) {
+    el.classList.add(type)
+  }
+
+}
 // ページ読み込み時の初期化
 window.addEventListener("DOMContentLoaded", () => {
   const searchForm = document.getElementById("searchForm");
@@ -51,31 +86,15 @@ async function handleSearchSubmit(e) {
   }
 
   try {
-    const loginRes = await fetch("/api/login", {
+    const loginData = await apiFetch("/api/login", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ number, pin })
     });
-    const loginData = await loginRes.json();
 
-    if (!loginRes.ok) throw new Error(loginData.error);
     authToken = loginData.token;
-    // /data/:number?pin=xxx にアクセス
-    const res = await fetch(`/api/student/${number}`, {
-      headers: { "Authorization": `Bearer ${authToken}` } // ここでトークンを添える！
-    });
 
-    const data = await res.json();
-
-    if (!res.ok) {
-      // サーバーからのエラーメッセージを表示 (例: "該当なし、または認証失敗")
-      msg.textContent = data.error || "取得に失敗しました。";
-      msg.classList.add("error");
-      // データ表示エリアを非表示にしておく
-      document.getElementById("studentSection").hidden = true;
-      document.getElementById("attendanceSection").hidden = true;
-      return;
-    }
+    // 学生情報取得
+    const data = await apiFetch(`/api/student/${number}`);
 
     // 正常取得できたら画面に表示
     currentStudentNumber = data.学生番号;
@@ -90,12 +109,10 @@ async function handleSearchSubmit(e) {
     document.getElementById("attendanceSection").hidden = false;
 
     // 成功メッセージ
-    msg.textContent = "学生情報を取得しました。";
-    msg.classList.add("success");
+    showMessage(msg, "学生情報を取得しました", "success");
   } catch (err) {
     console.error(err);
-    msg.textContent = "パスワードが違います";
-    msg.classList.add("error");
+    showMessage(msg, "ログインまたは取得に失敗しました", "error");
   }
 }
 
@@ -176,45 +193,28 @@ async function handleAttendanceSubmit(e) {
 
   // バリデーション
   if (!number) {
-    msg.textContent = "学生情報が読み込まれていません。先に上のフォームで検索してください。";
-    msg.classList.add("error");
+    showMessage(msg, "学生情報が読み込まれていません。先に上のフォームで検索してください。", "error");
     return;
   }
   if (!session) {
-    msg.textContent = "回を選択してください。";
-    msg.classList.add("error");
+    showMessage(msg, "回を選択してください。", "error");
     return;
   }
   if (!statusNode) {
-    msg.textContent = "出席 or 欠席を選択してください。";
-    msg.classList.add("error");
+    showMessage(msg, "出席 or 欠席を選択してください。。", "error");
     return;
   }
 
   const status = Number(statusNode.value); // 1 or 0
 
   try {
-    const res = await fetch("/api/attendance", {
+    const data = await apiFetch("/api/attendance", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${authToken}` // トークンを追加！
-      },
-      body: JSON.stringify({ number, session, status }),
+      body: JSON.stringify({ number, session, status })
     });
 
-    const data = await res.json();
 
-    if (!res.ok) {
-      // サーバーからのエラー（DBエラーなど）を表示
-      msg.textContent = data.error || "登録に失敗しました。";
-      msg.classList.add("error");
-      return;
-    }
-
-    // 成功メッセージ
-    msg.textContent = data.message || "出欠情報を更新しました。";
-    msg.classList.add("success");
+    showMessage(msg, "出欠情報を更新しました。", "success");
     handleSearchSubmit(new Event("submit"));
 
     // 【オプション】更新後の状態を再確認したい場合は、
@@ -222,8 +222,7 @@ async function handleAttendanceSubmit(e) {
 
   } catch (err) {
     console.error(err);
-    msg.textContent = "通信エラーが発生しました。";
-    msg.classList.add("error");
+    showMessage(msg, "通信エラーが発生しました。", "error");
   }
 
 }
