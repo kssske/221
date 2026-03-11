@@ -5,10 +5,12 @@ services:
     build: .
     restart: always
     volumes:
-      - .:/app 
-    command: npm run dev
+      - .:/app
+      - /app/node_modules
+    command: sh -c "npm run dev & npm run vite"
     ports:
       - "3000:3000"
+      - "5173:5173"
     depends_on:
       - db
     environment:
