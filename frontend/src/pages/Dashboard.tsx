@@ -4,10 +4,11 @@ import { useNavigate } from "react-router-dom";
 import StudentInfo from "../components/StudentInfo";
 import AttendanceTable from "../components/AttendanceTable";
 import AttendanceForm from "../components/AttendanceForm"; // 1. 追加
+import type { Student } from "../types/student";
 import "../styles/dashboard.css";
 
 export default function Dashboard() {
-    const [student, setStudent] = useState<any>(null);
+    const [student, setStudent] = useState<Student | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
@@ -21,7 +22,7 @@ export default function Dashboard() {
             return;
         }
         try {
-            const data = await apiFetch("/api/student/me");
+            const data = await apiFetch<Student>("/api/student/me");
             setStudent(data);
         } catch (err) {
             setError("認証に失敗しました。");
@@ -75,9 +76,9 @@ export default function Dashboard() {
                     <div className="card"><p>データが見つかりませんでした。</p></div>
                 )}
 
-                <div style={{ marginTop: "20px", textAlign: "center" }}>
+                <div className="logout-container">
                     <button
-                        style={{ backgroundColor: "#95a5a6", width: "auto", minWidth: "150px" }}
+                        className="btn-logout"
                         onClick={() => {
                             localStorage.removeItem("token");
                             navigate("/");
