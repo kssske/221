@@ -29,14 +29,27 @@ export default function StudentInfo({ data }: Props) {
                         <td>{data.ふりがな}</td>
                     </tr>
 
-                    <tr>
-                        <th>出席合計</th>
-                        <td>{data.出席合計}</td>
-                    </tr>
 
+
+                    <tr>
+                        <th>記述</th>
+                        <td>{data.記述}</td>
+                    </tr>
+                    <tr>
+                        <th>日付</th>
+                        <td>{data.日付}</td>
+                    </tr>
+                    <tr>
+                        <th>テスト合計</th>
+                        <td>{data.テスト合計}</td>
+                    </tr>
                     <tr>
                         <th>成績</th>
                         <td>{data.成績}</td>
+                    </tr>
+                    <tr>
+                        <th>出席合計</th>
+                        <td>{data.出席合計}</td>
                     </tr>
 
                 </tbody>

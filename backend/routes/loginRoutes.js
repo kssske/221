@@ -23,6 +23,6 @@ const authController = require("../controllers/loginController");
  *       401:
  *         description: 認証失敗
  */
-router.post("/login", authController.login);
+router.post("/login", authController.validateMark, authController.login);
 
 module.exports = router;

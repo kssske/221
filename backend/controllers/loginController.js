@@ -1,9 +1,19 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const { body, validationResult } = require('express-validator');
 const userModel = require("../models/loginModel");
-
+const validateMark = [
+    body('number').isInt().withMessage('学生番号は数値で入力してください'),
+    body('pin').isInt().withMessage('pinは数値で入力してください')
+];
 const login = async (req, res) => {
+
     try {
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array().map(e => e.msg) });
+        }
         const { number, pin } = req.body;
 
         // 1. ユーザーを探す
@@ -30,4 +40,4 @@ const login = async (req, res) => {
     }
 };
 
-module.exports = { login };
+module.exports = { validateMark, login };

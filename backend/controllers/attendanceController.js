@@ -1,13 +1,5 @@
 console.log("controller loaded");
 const Attendance = require("../models/attendanceModel");
-const { body, validationResult } = require('express-validator');
-
-
-exports.validateMark = [
-    body('number').isInt().withMessage('学生番号は数値で入力してください'),
-    body('session').isInt({ min: 1, max: 15 }).withMessage('回数は1〜15の間で指定してください'),
-    body('status').isIn([0, 1]).withMessage('出欠ステータスが不正です'),
-];
 
 
 exports.mark = async (req, res) => {

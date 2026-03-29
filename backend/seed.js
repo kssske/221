@@ -14,7 +14,7 @@ async function seed() {
     for (const sql of createTables) {
         await db.query(sql);
     }
-    await db.query("SET FOREIGN_KEY_CHECKS = 0;"); // 制約を一時的に無効化
+    await db.query("SET FOREIGN_KEY_CHECKS = 0;"); // Temporarily disable the restriction.
     await db.query("TRUNCATE TABLE 出欠");
     await db.query("TRUNCATE TABLE 備考");
     await db.query("TRUNCATE TABLE 秘密情報");
@@ -28,13 +28,12 @@ async function seed() {
     ];
     const testNames = ["テスト1", "テスト2", "期末試験"];
 
-    // 1. 事前に「備考」を入れる6人をランダムに決める（重複なし）
-    const studentIndices = Array.from({ length: 50 }, (_, i) => i + 1); // [1, 2, ..., 50]
+    // Select 6 people to randomly include 備考
+    const studentIndices = Array.from({ length: 50 }, (_, i) => i + 1);
     const selectedIndices = studentIndices
-        .sort(() => Math.random() - 0.5) // シャッフル
-        .slice(0, 6); // 先頭の6人を選択
+        .sort(() => Math.random() - 0.5) // Shuffle
+        .slice(0, 6); // pick the first 6 people 
 
-    // 2. 一括挿入用の配列を準備
     let studentsData = [];
     let attendanceData = [];
     let remarksData = [];
@@ -45,16 +44,16 @@ async function seed() {
     for (let i = 1; i <= 50; i++) {
         const studentNumber = 10300 + i;
 
-        // 受講者データ
+        // 受講者
         studentsData.push([studentNumber, `学生${i}`, `がくせい${i}`]);
 
-        // 出欠データ（15回分）
+        // 出欠（15回分）
         for (let s = 1; s <= 15; s++) {
             const status = Math.random() > 0.2 ? 1 : 0;
             attendanceData.push([studentNumber, s, status]);
         }
 
-        // 3. 選ばれた6人の場合のみ、備考データを作成
+        // creat 備考データ for picked 6 people
         if (selectedIndices.includes(i)) {
             const randomMsg = messages[Math.floor(Math.random() * messages.length)];
             const m = Math.floor(Math.random() * 12) + 1;
@@ -65,7 +64,7 @@ async function seed() {
             remarksData.push([studentNumber, randomMsg, day]);
         }
         testNames.forEach(testName => {
-            // テスト1, 2は40〜100点、期末は少し厳しめに30〜100点など
+            // test1, 2 are 40〜100点、final exam is more strictly 30〜100点
             const juken = Math.random() > 0.05 ? 1 : 0;
             const minScore = testName === "期末試験" ? 30 : 40;
             const score = Math.floor(Math.random() * (101 - minScore)) + minScore;

@@ -8,7 +8,7 @@ import type { Student } from "../types/student";
 import "../styles/dashboard.css";
 
 export default function Dashboard() {
-    const [student, setStudent] = useState<Student | null>(null);
+    const [student, setStudent] = useState<Student | null>(null); //Student otherwise null
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
@@ -22,7 +22,7 @@ export default function Dashboard() {
             return;
         }
         try {
-            const data = await apiFetch<Student>("/api/student/me");
+            const data = await apiFetch<Student>("/api/student/me"); //type Student will be returned
             setStudent(data);
         } catch (err) {
             setError("認証に失敗しました。");
@@ -31,7 +31,7 @@ export default function Dashboard() {
         }
     };
 
-    useEffect(() => {
+    useEffect(() => {  //Execute loadData() once the screen opens
         loadData();
     }, []);
 
@@ -58,11 +58,10 @@ export default function Dashboard() {
                             <StudentInfo data={student} />
                         </section>
 
-                        {/* 3. 出席登録カードをここに追加 */}
                         <section className="card">
                             <AttendanceForm
                                 studentNumber={student.学生番号}
-                                onUpdated={loadData} // 登録完了後に自分を再読み込み
+                                onUpdated={loadData} // Reload after registration is completed
                             />
                         </section>
 

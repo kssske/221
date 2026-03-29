@@ -8,10 +8,10 @@ interface Props {
 
 export default function AttendanceForm({ studentNumber, onUpdated }: Props) {
 
-    const [session, setSession] = useState("1");
+    const [session, setSession] = useState("1"); //the initial value 1
     const [status, setStatus] = useState("1");
 
-    const handleSubmit = async (e: React.SubmitEvent) => {
+    const handleSubmit = async (e: React.SubmitEvent) => { //event React.SubmitEvent
 
         e.preventDefault();
 
@@ -25,7 +25,7 @@ export default function AttendanceForm({ studentNumber, onUpdated }: Props) {
 
                 session,
 
-                status: Number(status)
+                status: Number(status) //Convert to a number
 
             })
 
@@ -43,7 +43,9 @@ export default function AttendanceForm({ studentNumber, onUpdated }: Props) {
 
             <select
                 value={session}
-                onChange={e => setSession(e.target.value)}
+                onChange={e => setSession(e.target.value)} //type a character into the input 
+            // field, the latest character (e.target.value) is overwritten and saved 
+            // to  `session`.
             >
 
                 {[...Array(15)].map((_, i) => (

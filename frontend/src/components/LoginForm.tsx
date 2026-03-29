@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, type SyntheticEvent } from "react";
 import { apiFetch } from "../api/api";
 
 interface Props {
-    onLogin: (token: string) => void; // 成功したらトークンを親に渡す
+    onLogin: (token: string) => void; // If successful, pass the token to the parent.
 }
 
 export default function LoginForm({ onLogin }: Props) {
@@ -10,7 +10,7 @@ export default function LoginForm({ onLogin }: Props) {
     const [pin, setPin] = useState("");
     const [error, setError] = useState("");
 
-    const handleSubmit = async (e: any) => {
+    const handleSubmit = async (e: SyntheticEvent) => {
         e.preventDefault();
         setError("");
 
@@ -23,7 +23,7 @@ export default function LoginForm({ onLogin }: Props) {
 
             onLogin(data.token);
         } catch (err: any) {
-            setError("学生番号またはPINが違います");
+            setError(err.message || "ログインに失敗しました");
         }
     }
 
@@ -51,7 +51,7 @@ export default function LoginForm({ onLogin }: Props) {
 
             <button type="submit">ログイン</button>
 
-            {error && <p className="message error">{error}</p>}
+            {error && <p className="message error">{error}</p>} {/*if error <p> otherwise null*/}
         </form>
     );
 }
