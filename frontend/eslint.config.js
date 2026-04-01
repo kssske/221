@@ -6,7 +6,7 @@ import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  globalIgnores(['dist']),  //Read the comments written in all .js files in the routes folder.
   {
     files: ['**/*.{ts,tsx}'],
     extends: [

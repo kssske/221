@@ -19,7 +19,8 @@ export async function apiFetch<T>(url: string, options: RequestInit = {}): Promi
     const data = await res.json();
 
     if (!res.ok) {
-        throw new Error(data.error || "API error");
+        const message = data.errors || data.error || "API error";
+        throw new Error(Array.isArray(message) ? message.join(", ") : message);
     }
 
     return data as T;

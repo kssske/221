@@ -52,7 +52,7 @@ export default function Dashboard() {
             </header>
 
             <main>
-                {student ? (
+                {student ? ( //if its true former
                     <>
                         <section className="card">
                             <StudentInfo data={student} />

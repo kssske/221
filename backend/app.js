@@ -2,7 +2,7 @@ const express = require("express");
 const { initDB } = require("./db");
 const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("./swagger");
-require('dotenv').config();
+require('dotenv').config(); //to use .env
 const app = express();
 app.use(express.json());
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));

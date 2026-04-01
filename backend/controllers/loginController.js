@@ -16,11 +16,11 @@ const login = async (req, res) => {
         }
         const { number, pin } = req.body;
 
-        // 1. ユーザーを探す
+        // 1. find user
         const user = await userModel.findPinByStudentNumber(number);
         if (!user) return res.status(401).json({ error: "認証失敗1" });
 
-        // 2. パスワード(PIN)の照合
+        // 2. Verify pin
         const hash = user.暗唱番号.toString();
         const isMatch = await bcrypt.compare(String(pin), hash);
 

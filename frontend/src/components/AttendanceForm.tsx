@@ -25,7 +25,7 @@ export default function AttendanceForm({ studentNumber, onUpdated }: Props) {
 
                 session,
 
-                status: Number(status) //Convert to a number
+                status: (status)
 
             })
 
