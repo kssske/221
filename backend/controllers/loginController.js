@@ -2,11 +2,11 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { body, validationResult } = require('express-validator');
 const userModel = require("../models/loginModel");
-const validateMark = [
+exports.validateMark = [
     body('number').isInt().withMessage('学生番号は数値で入力してください'),
     body('pin').isInt().withMessage('pinは数値で入力してください')
 ];
-const login = async (req, res) => {
+exports.login = async (req, res) => {
 
     try {
 
@@ -26,7 +26,7 @@ const login = async (req, res) => {
 
         if (!isMatch) return res.status(401).json({ error: "認証失敗2" });
 
-        // 3. トークン発行
+        // 3. Token Issuance
         const token = jwt.sign(
             { number },
             process.env.JWT_SECRET || "default_secret",
@@ -39,5 +39,3 @@ const login = async (req, res) => {
         res.status(500).json({ error: "サーバーエラー" });
     }
 };
-
-module.exports = { validateMark, login };
