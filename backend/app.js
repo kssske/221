@@ -5,6 +5,7 @@ const swaggerSpec = require("./swagger");
 require('dotenv').config(); //to use .env
 const PORT = process.env.PORT || 3000;
 const app = express();
+app.use(require("cors")());
 app.use(express.json());
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api", require("./routes/loginRoutes"));
