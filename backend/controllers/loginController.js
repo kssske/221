@@ -22,6 +22,7 @@ exports.login = async (req, res) => {
 
         // 2. Verify pin
         const hash = user.暗唱番号.toString();
+        console.log(hash);
         const isMatch = await bcrypt.compare(String(pin), hash);
 
         if (!isMatch) return res.status(401).json({ error: "認証失敗2" });

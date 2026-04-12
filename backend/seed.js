@@ -1,26 +1,21 @@
 const bcrypt = require("bcryptjs");
+const format = require('pg-format');
 const { initDB, getDB } = require("./db");
 async function seed() {
     await initDB();
     const db = getDB();
     const createTables = [
-        "CREATE TABLE IF NOT EXISTS `受講者` (学生番号 int PRIMARY KEY, 氏名 varchar(50), ふりがな varchar(50))ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;",
-        "CREATE TABLE IF NOT EXISTS `秘密情報` (学生番号 int PRIMARY KEY, 暗唱番号 varchar(255)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;",
-        "CREATE TABLE IF NOT EXISTS `出欠` (学生番号 int, 回 int, 出席 int, PRIMARY KEY(学生番号, 回)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;",
-        "CREATE TABLE IF NOT EXISTS `テスト評価` (学生番号 int, テスト名 varchar(50), 受験 int, 点数 int, PRIMARY KEY(学生番号, テスト名)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;",
-        "CREATE TABLE IF NOT EXISTS `備考` (学生番号 int, 記述 varchar(50), 日付 int, PRIMARY KEY(学生番号, 日付)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
+        'CREATE TABLE IF NOT EXISTS "受講者" ("学生番号" INTEGER PRIMARY KEY, "氏名" VARCHAR(50), "ふりがな" VARCHAR(50));',
+        'CREATE TABLE IF NOT EXISTS "秘密情報" ("学生番号" INTEGER PRIMARY KEY, "暗唱番号" VARCHAR(255));',
+        'CREATE TABLE IF NOT EXISTS "出欠" ("学生番号" INTEGER, "回" INTEGER, "出席" INTEGER, PRIMARY KEY("学生番号", "回"));',
+        'CREATE TABLE IF NOT EXISTS "テスト評価" ("学生番号" INTEGER, "テスト名" VARCHAR(50), "受験" INTEGER, "点数" INTEGER, PRIMARY KEY("学生番号", "テスト名"));',
+        'CREATE TABLE IF NOT EXISTS "備考" ("学生番号" INTEGER, "記述" VARCHAR(255), "日付" INTEGER, PRIMARY KEY("学生番号", "日付"));'
     ];
 
     for (const sql of createTables) {
         await db.query(sql);
     }
-    await db.query("SET FOREIGN_KEY_CHECKS = 0;"); // Temporarily disable the restriction.
-    await db.query("TRUNCATE TABLE 出欠");
-    await db.query("TRUNCATE TABLE 備考");
-    await db.query("TRUNCATE TABLE 秘密情報");
-    await db.query("TRUNCATE TABLE テスト評価");
-    await db.query("TRUNCATE TABLE 受講者");
-    await db.query("SET FOREIGN_KEY_CHECKS = 1;");
+    await db.query('TRUNCATE TABLE "受講者", "秘密情報", "出欠", "テスト評価", "備考" CASCADE;');
     const messages = [
         "プログラミングの理解が非常に早いです。",
         "積極的に質問をしており、意欲的です。",
@@ -84,19 +79,19 @@ async function seed() {
     // 4. まとめて実行（一括挿入）
     // mysql2ライブラリの query 形式を使うと [ [data1], [data2] ] を一気に送れます
     try {
-        await db.query("INSERT INTO 受講者 (学生番号, 氏名, ふりがな) VALUES ?", [studentsData]);
+        await db.query(format('INSERT INTO "受講者" ("学生番号", "氏名", "ふりがな") VALUES %L', studentsData));
         console.log("受講者OK");
 
-        await db.query("INSERT INTO 出欠 (学生番号, 回, 出席) VALUES ?", [attendanceData]);
+        await db.query(format('INSERT INTO "出欠" ("学生番号", "回", "出席") VALUES %L', attendanceData));
         console.log("出欠OK");
 
-        await db.query("INSERT INTO 備考 (学生番号, 記述, 日付) VALUES ?", [remarksData]);
+        await db.query(format('INSERT INTO "備考" ("学生番号", "記述", "日付") VALUES %L', remarksData));
         console.log("備考OK");
 
-        await db.query("INSERT INTO 秘密情報 (学生番号, 暗唱番号) VALUES ?", [pinn]);
+        await db.query(format('INSERT INTO "秘密情報" ("学生番号", "暗唱番号") VALUES %L', pinn));
         console.log("秘密情報OK");
 
-        await db.query("INSERT INTO テスト評価 (学生番号, テスト名, 受験, 点数) VALUES ?", [testScoreData]);
+        await db.query(format('INSERT INTO "テスト評価" ("学生番号", "テスト名", "受験", "点数") VALUES %L', testScoreData));
         console.log("テスト評価OK");
 
     } catch (error) {
