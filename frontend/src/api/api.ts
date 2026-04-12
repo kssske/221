@@ -1,3 +1,4 @@
+const baseUrl = import.meta.env.VITE_API_URL;
 export async function apiFetch<T>(url: string, options: RequestInit = {}): Promise<T> {
 
     const token = localStorage.getItem("token");
@@ -11,7 +12,7 @@ export async function apiFetch<T>(url: string, options: RequestInit = {}): Promi
         headers["Authorization"] = `Bearer ${token}`;
     }
 
-    const res = await fetch(url, {
+    const res = await fetch(baseUrl + url, {
         ...options,
         headers
     });
