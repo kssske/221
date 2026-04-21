@@ -18,14 +18,14 @@ exports.login = async (req, res) => {
 
         // 1. find user
         const user = await userModel.findPinByStudentNumber(number);
-        if (!user) return res.status(401).json({ error: "認証失敗1" });
+        if (!user) return res.status(401).json({ error: "その学生は存在しません" });
 
         // 2. Verify pin
         const hash = user.暗唱番号.toString();
         console.log(hash);
         const isMatch = await bcrypt.compare(String(pin), hash);
 
-        if (!isMatch) return res.status(401).json({ error: "認証失敗2" });
+        if (!isMatch) return res.status(401).json({ error: "パスワードエラー" });
 
         // 3. Token Issuance
         const token = jwt.sign(
