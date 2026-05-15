@@ -2,7 +2,7 @@ import { useState, type SyntheticEvent } from "react";
 import { apiFetch } from "../api/api";
 
 interface Props {
-    onLogin: (token: string) => void; // If successful, pass the token to the parent.
+    onLogin: (token: string) => void; // If successful, pass the token to LoginPage
 }
 
 export default function LoginForm({ onLogin }: Props) {

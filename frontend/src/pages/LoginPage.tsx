@@ -5,7 +5,7 @@ import "../styles/login.css";
 export default function LoginPage() {
     const navigate = useNavigate();
 
-    const handleLoginSuccess = (token: string) => {
+    const handleLoginSuccess = (token: string) => {  //once recive a token
         localStorage.setItem("token", token);
         navigate("/dashboard");
     };
