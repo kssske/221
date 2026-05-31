@@ -1,17 +1,70 @@
-1    docker compose up -d --build
-2    docker-compose up
-3    docker exec -it 221-app-1 node 1555/seed.js
+Student Management System
 
+学生番号とPINを利用して成績・出席情報を閲覧できる学生管理システムです。
 
+## 機能
 
-主席管理システム
+### 認証・セキュリティ
+
+* JWT認証
+* bcryptによるパスワードハッシュ化
+* express-validatorによる入力値検証
+* 環境変数による機密情報管理
+
+### 学生管理
+
+* 学生情報検索
+* 学生番号・PIN認証
+* テスト成績表示
+* 出席状況表示
+* 成績評価（S〜M）の自動算出
+
+### API
+
+* REST API
+* JSONレスポンス
+* エラーハンドリング
+
+## Tech Stack
+
+### Frontend
+
+* React
+* TypeScript
+* Vite
+
+### Backend
+
+* Node.js
+* Express
+* JWT
+* bcrypt
+* express-validator
+
+### Database
+
+* PostgreSQL
+
+### Deployment
+
+* Vercel
+* Railway
+
+## URL
+
 https://221-five.vercel.app
-学生番号10343 pin9092
-学生番号10344 pin3678
-学生番号10345 pin7704
-学生番号10346 pin9061
-学生番号10347 pin6231
-学生番号10348 pin5685
-学生番号10349 pin1636
-学生番号10350 pin5155
+
+## テスト用アカウント
+
+| 学生番号  | PIN  |
+| ----- | ---- |
+| 10343 | 9092 |
+| 10344 | 3678 |
+| 10345 | 7704 |
+| 10346 | 9061 |
+| 10347 | 6231 |
+| 10348 | 5685 |
+| 10349 | 1636 |
+| 10350 | 5155 |
+
 
